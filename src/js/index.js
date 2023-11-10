@@ -16,7 +16,7 @@ const RunningMove = new Running(sprites, context, 0, { x: 20, y: 20 })
 RunningMove.initialize()
 
 const keyboardListener = createKeyboardListener();
-console.log(keyboardListener)
+// console.log(keyboardListener)
 const player = createPlayer()
 
 keyboardListener.subscribe(player.movePlayer);
@@ -25,18 +25,18 @@ sprites.onload = function () {
     Game()
 }
 
+const direction = {
+    player: 0
+}
+
+const animate_moves = {
+    arrow: undefined
+}
+
+
 function Game(frames = 0, currentMoveSet = 0, currentDirection = 0) {
     context.clearRect(0, 0, canvas.width, canvas.height);
-
-    const frameRange = 16;
-    const passed = frames % frameRange === 0;
-    if (passed) {
-        currentMoveSet++
-        RunningMove.setMoveSet(currentMoveSet)
-    }
-
-
-    RunningMove.draw()
+    currentMoveSet = define_animation(frames, currentMoveSet, direction.player)
     requestAnimationFrame(() => {
         Game(frames + 1, currentMoveSet, currentDirection)
     })
@@ -46,25 +46,35 @@ function createPlayer() {
     const state = {}
     function movePlayer(command) {
         const acceptedMoves = {
-            ArrowUp() {
-                console.log("ArrowUp")
+            ArrowUp(identifier) {
+                // console.log(identifier)
+                // console.log("ArrowUp")
             },
 
-            ArrowRight() {
-                console.log("ArrowRight")
+            ArrowRight(identifier) {
+                animate_moves.arrow = identifier
+                direction.player = 0
+                // console.log("ArrowRight")
             },
 
-            ArrowDown() {
-                console.log("ArrowDown")
+            ArrowDown(identifier) {
+                // console.log(identifier)
+                // console.log("ArrowDown")
             },
 
-            ArrowLeft() {
-                console.log("ArrowLeft")
+            ArrowLeft(identifier) {
+                animate_moves.arrow = identifier
+                direction.player = 1
+                // console.log("ArrowLeft")
             },
         };
         const keyPressed = command.keyPressed;
+        console.log(keyPressed)
+        if (keyPressed === " ") {
+            console.log("espaço")
+        }
         const moveFunction = acceptedMoves[keyPressed] ?? (() => { });
-        moveFunction();
+        moveFunction(command.identifier);
     }
     return {
         movePlayer,
@@ -94,12 +104,18 @@ function createKeyboardListener() {
         const keyPressed = event.key;
         const command = {
             keyPressed,
+            identifier: "keydown"
         };
         notifyAll(command);
     }
 
     function handleKeyup(event) {
-        console.log("keyup")
+        const keyPressed = event.key;
+        const command = {
+            keyPressed,
+            identifier: "keyup"
+        };
+        notifyAll(command);
     }
 
     return {
@@ -107,27 +123,38 @@ function createKeyboardListener() {
     };
 }
 
-function move_stopped(params) {
-    context.clearRect(0, 0, canvas.width, canvas.height);
 
+const define_animation = (frames, currentMoveSet, direction) => {
+    // console.log(animate_moves.arrow)
+    if (animate_moves.arrow === "keydown") {
+        return animation_running(frames, currentMoveSet, direction)
+    }
+    return animation_stopped(frames, currentMoveSet, direction)
+}
+
+const animation_stopped = (frames, currentMoveSet, currentDirection) => {
     const frameRange = 100;
     const passed = frames % frameRange === 0;
-    const frameRangeDirection = 200;
-    const passedDirection = frames % frameRangeDirection === 0;
-
-    if (passedDirection) {
-        currentDirection++
-        StoppedMove.setDirection(currentDirection)
-    }
-
-
+    StoppedMove.setDirection(currentDirection)
     if (passed) {
         currentMoveSet++
         StoppedMove.setMoveSet(currentMoveSet)
     }
 
     StoppedMove.draw()
-    // requestAnimationFrame(() => {
-    //     Game(frames + 1, currentMoveSet, currentDirection)
-    // })
+    return currentMoveSet
+}
+
+const animation_running = (frames, currentMoveSet, currentDirection) => {
+    const frameRange = 16;
+    const passed = frames % frameRange === 0;
+    // console.log(currentDirection)
+    RunningMove.setDirection(currentDirection)
+    if (passed) {
+        currentMoveSet++
+        RunningMove.setMoveSet(currentMoveSet)
+    }
+
+    RunningMove.draw()
+    return currentMoveSet
 }
