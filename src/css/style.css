@@ -1,0 +1,16 @@
+#canvas {
+    border: 10px solid #ccc;
+    /* image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    image-rendering: -moz-crisp-edges; */
+    width: 1000px;
+    height: 400px;
+}
+
+body {
+    overflow: hidden;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
