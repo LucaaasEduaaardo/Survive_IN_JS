@@ -9,31 +9,28 @@ export default class Running extends BaseScreens {
         this.coord = coord;
         this.movements = [
             [ // left
-                { x: 0, y: 82, w: 54, h: 77 },
-                { x: 57, y: 84, w: 51, h: 77 },
-                { x: 111, y: 83, w: 35, h: 77 },
-                { x: 149, y: 82, w: 37, h: 77 },
-                { x: 189, y: 80, w: 49, h: 77 },
-                { x: 241, y: 82, w: 57, h: 77 },
-                { x: 301, y: 84, w: 49, h: 77 },
-                { x: 353, y: 84, w: 33, h: 77 },
-                { x: 389, y: 82, w: 35, h: 77 },
-                { x: 427, y: 80, w: 51, h: 77 },
+                { x: 16, y: 136, w: 25, h: 32 },
+                { x: 74, y: 136, w: 25, h: 32 },
+                { x: 131, y: 135, w: 17, h: 33 },
+                { x: 184, y: 135, w: 23, h: 30 },
+                { x: 241, y: 136, w: 21, h: 32 },
+                { x: 299, y: 136, w: 18, h: 32 },
+                { x: 354, y: 136, w: 22, h: 32 },
+                { x: 408, y: 135, w: 25, h: 30 },
             ],
             [ // right
-                { x: 424, y: 163, w: 55, h: 77 },
-                { x: 370, y: 165, w: 51, h: 77 },
-                { x: 332, y: 164, w: 35, h: 77 },
-                { x: 292, y: 163, w: 37, h: 77 },
-                { x: 240, y: 161, w: 49, h: 77 },
-                { x: 180, y: 163, w: 57, h: 77 },
-                { x: 128, y: 165, w: 49, h: 77 },
-                { x: 92, y: 165, w: 33, h: 77 },
-                { x: 54, y: 163, w: 35, h: 77 },
-                { x: 0, y: 161, w: 51, h: 77 },
+                { x: 855, y: 136, w: 25, h: 32 },
+                { x: 801, y: 136, w: 25, h: 32 },
+                { x: 748, y: 135, w: 17, h: 33 },
+                { x: 689, y: 135, w: 23, h: 30 },
+                { x: 634, y: 136, w: 21, h: 32 },
+                { x: 579, y: 136, w: 18, h: 32 },
+                { x: 520, y: 136, w: 22, h: 32 },
+                { x: 463, y: 135, w: 25, h: 30 },
             ]
         ];
-        this.direction = direction % 10;
+        this.moveCount = this.movements[0].length;
+        this.direction = direction % this.moveCount;
     }
 
     setDirection(params) {
@@ -45,7 +42,7 @@ export default class Running extends BaseScreens {
     }
 
     setMoveSet(params) {
-        this.moveSet = params % 10;
+        this.moveSet = params % this.moveCount;
     }
 
     initialize(params) {
@@ -71,5 +68,10 @@ export default class Running extends BaseScreens {
             this.coord.x, this.coord.y,
             w, h
         );
+        // return { x: this.coord.x, y: this.coord.y }
+        if (!this.direction) {
+            return { x: this.coord.x + 1, y: this.coord.y }
+        }
+        return { x: this.coord.x - 1, y: this.coord.y }
     }
 }

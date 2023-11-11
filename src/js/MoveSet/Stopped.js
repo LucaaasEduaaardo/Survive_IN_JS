@@ -14,12 +14,20 @@ export default class Stopped extends BaseScreens {
         this.coord = coord;
         this.movements = [
             [ // left
-                { x: 45, y: 0 },
-                { x: 0, y: 0 }
+                { x: 18, y: 24, w: 22, h: 32 },
+                { x: 74, y: 24, w: 22, h: 32 },
+                { x: 130, y: 24, w: 22, h: 32 },
+                { x: 186, y: 25, w: 22, h: 31 },
+                { x: 242, y: 25, w: 22, h: 31 },
+                { x: 298, y: 25, w: 22, h: 31 },
             ],
             [ // right
-                { x: 90, y: 0 },
-                { x: 135, y: 0 }
+                { x: 856, y: 24, w: 22, h: 32 },
+                { x: 800, y: 24, w: 22, h: 32 },
+                { x: 744, y: 24, w: 22, h: 32 },
+                { x: 688, y: 25, w: 22, h: 31 },
+                { x: 632, y: 25, w: 22, h: 31 },
+                { x: 576, y: 25, w: 22, h: 31 },
             ]
         ];
         this.direction = direction % 2;
@@ -34,30 +42,30 @@ export default class Stopped extends BaseScreens {
     }
 
     setMoveSet(params) {
-        this.moveSet = params % 2;
+        this.moveSet = params % this.movements[0].length;
     }
 
     initialize(params) {
-        const currentMoveSet = this.movements[this.direction][this.moveSet];
+        const { x, y, w, h } = this.movements[this.direction][this.moveSet];
 
         this.context.drawImage(
             this.sprite,
-            currentMoveSet.x, currentMoveSet.y,
-            42, 77,
+            x, y,
+            w, h,
             this.coord.x, this.coord.y,
-            42, 77
+            w, h
         );
     }
 
     draw(params) {
-        const currentMoveSet = this.movements[this.direction][this.moveSet];
+        const { x, y, w, h } = this.movements[this.direction][this.moveSet];
 
         this.context.drawImage(
             this.sprite,
-            currentMoveSet.x, currentMoveSet.y,
-            42, 77,
+            x, y,
+            w, h,
             this.coord.x, this.coord.y,
-            42, 77
+            w, h
         );
     }
 }
