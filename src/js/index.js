@@ -1,33 +1,49 @@
 import '../css/style.css';
-import spriteImage from "../assets/character/char_blue.png";
+import spriteImageCharacter from "../assets/character/char_blue.png";
+import spriteImageBackground from "../assets/background/background_layer_1.png"
 // import BaseScreens from './modules/BaseScreens';
 // import Game from "./modules/Game";
 import Stopped from "./MoveSet/Stopped";
 import Running from "./MoveSet/Running";
 import Attacking from "./MoveSet/Attacking"
+import Jumping from "./MoveSet/Jumping";
+import Dying from "./MoveSet/Dying";
 const app = document.getElementById("app");
 const canvas = document.getElementById("canvas");
 const context = canvas.getContext("2d");
 
-const sprites = new Image();
-sprites.src = spriteImage;
+const spritesCharacter = new Image();
+spritesCharacter.src = spriteImageCharacter;
+const spriteBackground = new Image()
+spriteBackground.src = spriteImageBackground;
+
 const coordinates = { x: 20, y: 20 }
 const setCoordinates = ({ x = 0, y = 0 }) => {
     coordinates.x = x
     coordinates.y = y
 }
-const StoppedMove = new Stopped(sprites, context, 0, coordinates)
+const StoppedMove = new Stopped(spritesCharacter, context, 0, coordinates)
 StoppedMove.initialize()
-const RunningMove = new Running(sprites, context, 0, coordinates)
+const RunningMove = new Running(spritesCharacter, context, 0, coordinates)
 RunningMove.initialize()
-const AttackingMove = new Attacking(sprites, context, 0, coordinates)
+const AttackingMove = new Attacking(spritesCharacter, context, 0, coordinates)
 AttackingMove.initialize()
+const JumpingMove = new Jumping(spritesCharacter, context, 0, coordinates)
+JumpingMove.initialize()
+const DyingMove = new Dying(spritesCharacter, context, 0, coordinates)
+DyingMove.initialize()
+
+
 const keyboardListener = createKeyboardListener();
 const player = createPlayer()
 
 keyboardListener.subscribe(player.movePlayer);
 
-sprites.onload = function () {
+
+spriteBackground.onload = function () {
+
+}
+spritesCharacter.onload = function () {
     Game()
 }
 
@@ -127,9 +143,8 @@ function createKeyboardListener() {
     };
 }
 
-
 const define_animation = (frames, currentMoveSet, direction) => {
-    // return animation_attacking(frames, currentMoveSet, direction)
+    // return animation_dying(frames, currentMoveSet, direction)
     if (animate_moves.attack === "keydown") {
         return animation_attacking(frames, currentMoveSet, direction)
     }
@@ -139,6 +154,33 @@ const define_animation = (frames, currentMoveSet, direction) => {
     }
     return animation_stopped(frames, currentMoveSet, direction)
 }
+
+const animation_dying = (frames, currentMoveSet, currentDirection) => {
+    const frameRange = 50;
+    const passed = frames % frameRange === 0;
+    DyingMove.setDirection(currentDirection)
+    if (passed) {
+        currentMoveSet++
+        DyingMove.setMoveSet(currentMoveSet)
+    }
+
+    coordinates.x = DyingMove.draw().x
+    return currentMoveSet
+}
+
+const animation_jumping = (frames, currentMoveSet, currentDirection) => {
+    const frameRange = 15;
+    const passed = frames % frameRange === 0;
+    JumpingMove.setDirection(currentDirection)
+    if (passed) {
+        currentMoveSet++
+        JumpingMove.setMoveSet(currentMoveSet)
+    }
+
+    coordinates.x = JumpingMove.draw().x
+    return currentMoveSet
+}
+
 
 const animation_attacking = (frames, currentMoveSet, currentDirection) => {
     const frameRange = 15;
